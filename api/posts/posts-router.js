@@ -53,6 +53,41 @@ router.post('/', async (request, response) => {
      }
 })
 
+router.put('/:id', async (request, response) => {
+     const { id } = request.params;
+     const { title, contents } = request.body;
+     try {
+          const fetchedPost = await POSTS.findById(id);
+          if (!title || !contents) {
+               response.status(400).json({
+                    message: "Please provide title and contents for the post"
+               })
+          }
+          else {
+               if (!fetchedPost) {
+                    response.status(404).json({
+                         message: "The post with the specified ID does not exist"
+                    })
+               }
+               else {
+                    await POSTS.update(id, { title, contents })
+                    const svrReply = await POSTS.findById(id)
+                    response.status(200).json(svrReply)
+               }
+          }
+     }
+     catch (error) {
+          response.status(500).json({
+               message: "The post information could not be modified"
+          })
+     }
+})
+
+// - If the post is found and the new information is valid:
+
+//   - update the post document in the database using the new information sent in the `request body`.
+//   - return HTTP status code `200` (OK).
+//   - return the newly updated _post_.
 
 
 
