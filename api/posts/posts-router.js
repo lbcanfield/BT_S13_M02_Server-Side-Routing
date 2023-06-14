@@ -103,13 +103,27 @@ router.delete('/:id', async (request, response) => {
           })
      }
 })
-// #### 5 [DELETE] /api/posts/:id
 
-// - If the _post_ with the specified `id` is not found:
-
-//   - return HTTP status code `404` (Not Found).
-//   - return the following JSON: `{ message: "The post with the specified ID does not exist" }`.
-
+router.get('/:id/comments', async (request, response) => {
+     const { id } = request.params;
+     try {
+          const fetchedPost = await POSTS.findById(id);
+          if (!fetchedPost) {
+               response.status(404).json({
+                    message: "The post with the specified ID does not exist"
+               })
+          }
+          else {
+               const svrReply = await POSTS.findPostComments(id);
+               response.status(200).json(svrReply)
+          }
+     }
+     catch (error) {
+          response.status(500).json({
+               message: "The comments information could not be retrieved"
+          })
+     }
+})
 
 
 
