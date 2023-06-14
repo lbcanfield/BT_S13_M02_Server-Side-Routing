@@ -32,6 +32,27 @@ router.get('/:id', async (request, response) => {
      }
 })
 
+router.post('/', async (request, response) => {
+     const { title, contents } = request.body
+     try {
+          if (!title || !contents) {
+               response.status(400).json({
+                    message: "Please provide title and contents for the post"
+               })
+          }
+          else {
+               const newPost = await POSTS.insert({ title, contents });
+               const svrReply = await POSTS.findById(newPost.id);
+               response.status(201).json(svrReply)
+          }
+     }
+     catch (error) {
+          response.status(500).json({
+               message: "There was an error while saving the post to the database"
+          })
+     }
+})
+
 
 
 
